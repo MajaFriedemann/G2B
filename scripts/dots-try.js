@@ -154,50 +154,6 @@ function drawDots(parent, canvasID, canvasWidth, canvasHeight, dotCount, dotsSta
         //draw the squircle stimuli
         drawSquircleStimuli(parent, canvasID, canvasWidth, canvasHeight, total_circles, radius,
             color_mean, color_sd, color_mean_two, moreRedSide);
-
-        //cover half the stimulus
-        var coverCanvas = document.createElement('canvas');
-        div = document.getElementById("jspsych-canvas-sliders-response-stimulus");
-        coverCanvas.id     = "coverCanvas";
-        coverCanvas.width  = canvasWidth;
-        coverCanvas.height = canvasHeight;
-        coverCanvas.style.position = "absolute";
-        div.appendChild(coverCanvas);
-
-        var ctx = coverCanvas.getContext("2d");
-        ctx.fillStyle = "black";
-        var cy = coverCanvas.height/2;
-        var cxl = coverCanvas.width / 2 - coverCanvas.width / 3;
-        var cxr = coverCanvas.width / 2 + coverCanvas.width / 3;
-
-        /*draw the left cover*/
-        var sequence = myEvenLengthSequence(total_circles);
-        for (i = 0; i < total_circles; i++) {
-            if (sequence[i] === 1) {
-                var angle = i * 2 * Math.PI / total_circles;
-                var xl = cxl + Math.cos(angle) * radius;
-                var y = cy + Math.sin(angle) * radius;
-                ctx.beginPath();
-                ctx.arc(xl, y, 21 - 0.5 * total_circles, 0, Math.PI * 2, true);
-                ctx.closePath();
-                ctx.fill();
-            }
-        }
-
-        /*draw the right cover*/
-        var sequence = myEvenLengthSequence(total_circles);
-        for (i = 0; i < total_circles; i++) {
-            if (sequence[i] === 1) {
-                var angle = i * 2 * Math.PI / total_circles;
-                var xr = cxr + Math.cos(angle) * radius;
-                var y = cy + Math.sin(angle) * radius;
-                ctx.beginPath();
-                ctx.arc(xr, y, 21 - 0.5 * total_circles, 0, Math.PI * 2, true);
-                ctx.closePath();
-                ctx.fill();
-            }
-        }
-
     }
 
 
@@ -225,8 +181,33 @@ function drawDots(parent, canvasID, canvasWidth, canvasHeight, dotCount, dotsSta
     //determine partner's p(correct) and then their choice
     // get p(correct) using randn_bm(min, max, skew) --> see helper.js
     var pCorrect;
-    //p correct from normal distribution between 0.6 and 1 (mean 0.8)
-    pCorrect = randn_bm(0.6, 1, 1);
+    // //p correct from normal distribution between 0.6 and 1 (mean 0.8)
+    // pCorrect = randn_bm(0.6, 1, 1);
+    //
+
+    if (partnerBias == "right") {
+        // partner biased to the right
+        if (correctSide == "left") {
+            // in 66% of cases pick left, in 34% of cases pick right
+            //p correct from normal distribution between 0.53 and 0.79 (mean 0.66)
+            pCorrect = randn_bm(0.53, 0.79, 1);
+        } else { // if correct side is right
+            // in 14% of cases pick left, in 87% of cases pick right
+            //p correct from normal distribution between 0.74 and 1 (mean 0.87)
+            pCorrect = randn_bm(0.74, 1, 1);
+        }
+    } else {
+        // partner biased to the left
+        if (correctSide == "left") {
+            // in 14% of cases pick right, in 87% of cases pick left
+            //p correct from normal distribution between 0.74 and 1 (mean 0.87)
+            pCorrect = randn_bm(0.74, 1, 1);
+        } else { // if correct side is right
+            // in 66% of cases pick right, in 34% of cases pick left
+            //p correct from normal distribution between 0.53 and 0.79 (mean 0.66)
+            pCorrect = randn_bm(0.53, 0.79, 1);
+        }
+    }
 
     // pick correct response with p(Correct)
     var partnerChoice;
@@ -689,9 +670,13 @@ function drawDots(parent, canvasID, canvasWidth, canvasHeight, dotCount, dotsSta
                         if (strategicVersion === true) {
                             // if there is no partner, accuracy is based on individual responses, otherwise its based on joint decision accuracy
                             if (partner != "none") {
-                                accuracy = round(meanNaN(trialDataVariable['jointCorrect']), 2) * 100;
-                                participantAccu = round(meanNaN(trialDataVariable['participantCorrect']), 2) * 100;
-                                partnerAccu = round(meanNaN(trialDataVariable['partnerCorrect']), 2) * 100;
+                                if (partner == "alone") {
+                                    accuracy = round(mean(trialDataVariable['isCorrect']), 2) * 100;
+                                } else {
+                                    accuracy = round(meanNaN(trialDataVariable['jointCorrect']), 2) * 100;
+                                    participantAccu = round(meanNaN(trialDataVariable['participantCorrect']), 2) * 100;
+                                    partnerAccu = round(meanNaN(trialDataVariable['partnerCorrect']), 2) * 100;
+                                }
                             } else {
                                 accuracy = round(mean(trialDataVariable['isCorrect']), 2) * 100;
                             }

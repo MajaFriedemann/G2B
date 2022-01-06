@@ -203,5 +203,21 @@ jsPsych.plugins['jspsych-loading-partner'] = (function () {
         });
     };
 
+    // if this is the first partner, randomize partner bias
+    if (partnerBias == "none") {
+        const y = Math.random();
+        if (y < 0.5) {
+            partnerBias = "right";
+        } else {
+            partnerBias = "left";
+        }
+    // if this is the second partner, then make the bias the opposite side of what it was before
+    } else if (partnerBias == "right") {
+        partnerBias = "left"
+    } else {
+        partnerBias = "right"
+    }
+
+
     return plugin;
 })();

@@ -42,6 +42,7 @@
     <script src="scripts/jpsych/jspsych-demographics.js"></script>
     <script src="scripts/jpsych/jspsych-dots.js"></script>
     <script src="scripts/jpsych/jspsych-feedback-form.js"></script>
+    <script src="scripts/jpsych/jspsych-scale.js"></script>
     <script src="scripts/jpsych/jspsych-overconfident-feedback.js"></script>
     <script src="scripts/jpsych/jspsych-underconfident-feedback.js"></script>
     <script src="scripts/jpsych/jspsych-loading.js"></script>
@@ -72,13 +73,13 @@
     //CHANGE ALL THE THREE VARIABLES FOR SESSION NO2
 
     // set this to true for the squircles task version and to false for the dot task version
-    const squirclesVersion = true;
+    const squirclesVersion = false;
 
     //set this to true for the strategic version with feedback and to false for the non-strategic version
     const strategicVersion = true;
 
     //set this to 1 or 2 depending on whether it is the first or second session of the participant (just for saving this variable)
-    const session = 2;
+    const session = 1;
 
 
     /* PROLIFIC PARAMETERS */
@@ -96,7 +97,7 @@
     var studyName = 'Confidence in group decision-making';
     var release_date = '2021/03/09';
     var testing_timeline = false;
-    var trialTypeOrder = 'all';          /* "testing" or "all"  |  for "testing" the right click context menu is enabled and the data will be downloaded as a csv file*/
+    var trialTypeOrder = 'testing';          /* "testing" or "all"  |  for "testing" the right click context menu is enabled and the data will be downloaded as a csv file*/
     var scoreRule = 'cumulative reward';
     if (strategicVersion === false) {
         scoreRule = 'brier';
@@ -136,6 +137,13 @@
     // Math.seedrandom(seed);
 
 
+    // set scale to use (made dependent on session variable here)
+    var scaleUsed;
+    if (session == 1) {
+        scaleUsed = "BIG5"
+    } else {
+        scaleUsed = "MISS"
+    }
 
     // randomize partner order
     var partnerOrder = Math.random();  //used to decide if under- or overconfident partner is first
@@ -145,6 +153,9 @@
     } else {
         pOrder = "overconfident, then underconfident";
     }
+
+    // randomize partner bias in the "loading partner" script such that it is randomized for each partner again but initialize the variable here to use it across scripts
+    var partnerBias = "none";
 
     // randomize color of partner (used for marker color in dots.try and for background color in jspsych-partner-message)
     var color = Math.random();
@@ -250,7 +261,7 @@
     var partnerAccu;
     var participantChosen = 0;
     var partnerChosen = 0;
-    var trialsPerBlock = 25; //make trial count 25 here (4x25 trials = 100 trials per partner with info seeking) !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    var trialsPerBlock = 2; //make trial count 20 here (4x20 with partner & 1X20 alone) !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     var dotCountHigherList = [];
     var finalHigh;
     var overallScore = 0;
@@ -371,7 +382,7 @@
         rightColor: 'rgb(255,255,255)',
         waitTimeLimit: 2000,
         isTutorialMode: true,
-        trial_count: 100,             //make trial count 100 here !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        trial_count: 3,             //make trial count 100 here !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         yellowButtonEnabled: false,
         greenButtonName: 'CONTINUE',
         staircasingPractice: 'practice1',
@@ -388,7 +399,7 @@
         rightColor: 'rgb(255,255,255)',
         waitTimeLimit: 2000,
         isTutorialMode: true,
-        trial_count: 5,                 //make trial count 5 here
+        trial_count: 5,                 //make trial count 5 here !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         greenButtonName: 'CONTINUE',
         staircasingPractice: 'off',
         partner: 'none'
@@ -431,6 +442,22 @@
         greenButtonName: 'FINAL DECISION',
         staircasingPractice: 'off',
         partner: 'overconfident'
+    };
+
+
+    var dotTaskAlone = { ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        type: 'jspsych-dots',
+        dot_minimum: 200,
+        canvasWidth: 500,
+        canvasHeight: 180,
+        leftColor: 'rgb(255,255,255)',
+        rightColor: 'rgb(255,255,255)',
+        waitTimeLimit: 2000,
+        isTutorialMode: false, // otherwise accuracy would be compared to threshold
+        trial_count: trialsPerBlock,
+        greenButtonName: 'CONTINUE',
+        staircasingPractice: 'practice1', // this means there won't be a confidence slider
+        partner: 'alone'
     };
 
 
@@ -760,6 +787,11 @@
         askStrategy: false
     };
 
+    var scale = {
+        type: 'jspsych-scale',
+        askStrategy: false
+    };
+
 
     /* TIMELINES FOR RELEASE & TESTING */
     switch(trialTypeOrder) {
@@ -774,9 +806,9 @@
                         //non-strategic dot version underconfident, then overconfident
                         var timeline = [
                             //loading,
-                            PIS,
-                            consent,
-                            demographics,
+                            //PIS,
+                            //consent,
+                            //demographics,
                             dotTaskInstructions1,
                             dotTaskPractice1,
                             dotTaskInstructions2NS,
@@ -784,33 +816,31 @@
                             dotTaskStartNS,
                             loadingPartner,
                             partner1NS,
-                            dotTask1,
+                            dotTask1, //1
                             dotTaskRest,
-                            dotTaskStartInfoSeekingNS,
-                            dotTask1,
+                            dotTask1, //2
                             dotTaskRest,
-                            dotTask1,
+                            dotTask1, //3
                             dotTaskRest,
-                            dotTask1,
-                            dotTaskRest,
-                            dotTask1,
-                            dotTaskRest,
-                            feedbackUnderconfPartner,
+                            dotTask1, //4
+                            // instructions for betting scale
+                            // 20 alone trials with betting scale
+                            feedbackUnderconfPartner, // do we want to keep this??
                             dotTaskInstructions3NS,
                             loadingPartner,
                             partner2NS,
-                            dotTask2,
+                            dotTask2, //1
                             dotTaskRest,
-                            dotTask2,
+                            dotTask2, //2
                             dotTaskRest,
-                            dotTask2,
+                            dotTask2, //3
                             dotTaskRest,
-                            dotTask2,
-                            dotTaskRest,
-                            dotTask2,
-                            dotTaskRest,
-                            feedbackOverconfPartner,
+                            dotTask2, //4
+                            // instructions for betting scale
+                            // 20 alone trials with betting scale
+                            feedbackOverconfPartner, // do we want to keep this??
                             dotsScoreRevealNS,
+                            // BIG FIVE SCALE or Sugestibility scale
                             feedbackPoll,
                             //debriefing,
                             thankYou
@@ -819,9 +849,9 @@
                         //strategic dot version underconfident, then overconfident
                         var timeline = [
                             //loading,
-                            PIS,
-                            consent,
-                            demographics,
+                            //PIS,
+                            //consent,
+                            //demographics,
                             dotTaskInstructions1,
                             dotTaskPractice1,
                             dotTaskInstructions2,
@@ -829,32 +859,29 @@
                             dotTaskStart,
                             loadingPartner,
                             partner1,
-                            dotTask1,
+                            dotTask1, //1
                             dotTaskRest,
-                            dotTaskStartInfoSeeking,
-                            dotTask1,
+                            dotTask1, //2
                             dotTaskRest,
-                            dotTask1,
+                            dotTask1, //3
                             dotTaskRest,
-                            dotTask1,
-                            dotTaskRest,
-                            dotTask1,
-                            dotTaskRest,
-                            feedbackUnderconfPartner,
+                            dotTask1, //4
+                            // instructions for betting scale
+                            // 20 alone trials with betting scale
+                            feedbackUnderconfPartner, // do we want to keep this?
                             dotTaskInstructions3,
                             loadingPartner,
                             partner2,
-                            dotTask2,
+                            dotTask2, //1
                             dotTaskRest,
-                            dotTask2,
+                            dotTask2, //2
                             dotTaskRest,
-                            dotTask2,
+                            dotTask2, //3
                             dotTaskRest,
-                            dotTask2,
-                            dotTaskRest,
-                            dotTask2,
-                            dotTaskRest,
-                            feedbackOverconfPartner,
+                            dotTask2, //4
+                            // instructions for betting scale
+                            // 20 alone trials with betting scale
+                            feedbackOverconfPartner, // do we want to keep this?
                             dotsScoreReveal,
                             feedbackPoll,
                             //debriefing,
@@ -868,9 +895,9 @@
                         //non-strategic squircles version underconfident, then overconfident
                         var timeline = [
                             //loading,
-                            PIS,
-                            consent,
-                            demographics,
+                            //PIS,
+                            //consent,
+                            //demographics,
                             squirclesTaskInstructions1,
                             dotTaskPractice1,
                             squirclesTaskInstructions2NS,
@@ -878,32 +905,29 @@
                             squirclesTaskStartNS,
                             loadingPartner,
                             partner1NS,
-                            dotTask1,
+                            dotTask1, //1
                             dotTaskRest,
-                            squirclesTaskStartInfoSeekingNS,
-                            dotTask1,
+                            dotTask1, //2
                             dotTaskRest,
-                            dotTask1,
+                            dotTask1, //3
                             dotTaskRest,
-                            dotTask1,
-                            dotTaskRest,
-                            dotTask1,
-                            dotTaskRest,
-                            feedbackUnderconfPartner,
+                            dotTask1, //4
+                            // instructions for betting scale
+                            // 20 alone trials with betting scale
+                            feedbackUnderconfPartner, // do we want to keep this?
                             squirclesTaskInstructions3NS,
                             loadingPartner,
                             partner2NS,
-                            dotTask2,
+                            dotTask2, //1
                             dotTaskRest,
-                            dotTask2,
+                            dotTask2, //2
                             dotTaskRest,
-                            dotTask2,
+                            dotTask2, //3
                             dotTaskRest,
-                            dotTask2,
-                            dotTaskRest,
-                            dotTask2,
-                            dotTaskRest,
-                            feedbackOverconfPartner,
+                            dotTask2, //4
+                            // instructions for betting scale
+                            // 20 alone trials with betting scale
+                            feedbackOverconfPartner, // do we want to keep this?
                             dotsScoreRevealNS,
                             feedbackPoll,
                             //debriefing,
@@ -913,9 +937,9 @@
                         //strategic squircles version underconfident, then overconfident
                         var timeline = [
                             //loading,
-                            PIS,
-                            consent,
-                            demographics,
+                            //PIS,
+                            //consent,
+                            //demographics,
                             squirclesTaskInstructions1,
                             dotTaskPractice1,
                             squirclesTaskInstructions2,
@@ -923,32 +947,29 @@
                             squirclesTaskStart,
                             loadingPartner,
                             partner1,
-                            dotTask1,
+                            dotTask1, //1
                             dotTaskRest,
-                            squirclesTaskStartInfoSeeking,
-                            dotTask1,
+                            dotTask1, //2
                             dotTaskRest,
-                            dotTask1,
+                            dotTask1, //3
                             dotTaskRest,
-                            dotTask1,
-                            dotTaskRest,
-                            dotTask1,
-                            dotTaskRest,
-                            feedbackUnderconfPartner,
+                            dotTask1, //4
+                            // instructions for betting scale
+                            // 20 alone trials with betting scale
+                            feedbackUnderconfPartner, // do we want to keep this?
                             squirclesTaskInstructions3,
                             loadingPartner,
                             partner2,
-                            dotTask2,
+                            dotTask2, //1
                             dotTaskRest,
-                            dotTask2,
+                            dotTask2, //2
                             dotTaskRest,
-                            dotTask2,
+                            dotTask2, //3
                             dotTaskRest,
-                            dotTask2,
-                            dotTaskRest,
-                            dotTask2,
-                            dotTaskRest,
-                            feedbackOverconfPartner,
+                            dotTask2, //4
+                            // instructions for betting scale
+                            // 20 alone trials with betting scale
+                            feedbackOverconfPartner, // do we want to keep this?
                             dotsScoreReveal,
                             feedbackPoll,
                             //debriefing,
@@ -968,9 +989,9 @@
                         // non-strategic dots version overconfident, then underconfident
                         var timeline = [
                             //loading,
-                            PIS,
-                            consent,
-                            demographics,
+                            //PIS,
+                            //consent,
+                            //demographics,
                             dotTaskInstructions1,
                             dotTaskPractice1,
                             dotTaskInstructions2NS,
@@ -978,32 +999,29 @@
                             dotTaskStartNS,
                             loadingPartner,
                             partner1NS,
-                            dotTask2,
+                            dotTask2, //1
                             dotTaskRest,
-                            dotTaskStartInfoSeekingNS,
-                            dotTask2,
+                            dotTask2, //2
                             dotTaskRest,
-                            dotTask2,
+                            dotTask2, //3
                             dotTaskRest,
-                            dotTask2,
-                            dotTaskRest,
-                            dotTask2,
-                            dotTaskRest,
-                            feedbackOverconfPartner,
+                            dotTask2, //4
+                            // instructions for betting scale
+                            // 20 alone trials with betting scale
+                            feedbackOverconfPartner, // do we want to keep this?
                             dotTaskInstructions3NS,
                             loadingPartner,
                             partner2NS,
-                            dotTask1,
+                            dotTask1, //1
                             dotTaskRest,
-                            dotTask1,
+                            dotTask1, //2
                             dotTaskRest,
-                            dotTask1,
+                            dotTask1, //3
                             dotTaskRest,
-                            dotTask1,
-                            dotTaskRest,
-                            dotTask1,
-                            dotTaskRest,
-                            feedbackUnderconfPartner,
+                            dotTask1, //4
+                            // instructions for betting scale
+                            // 20 alone trials with betting scale
+                            feedbackUnderconfPartner, // do we want to keep this?
                             dotsScoreRevealNS,
                             feedbackPoll,
                             //debriefing,
@@ -1013,9 +1031,9 @@
                         // strategic dots version overconfident, then underconfident
                         var timeline = [
                             //loading,
-                            PIS,
-                            consent,
-                            demographics,
+                            //PIS,
+                            //consent,
+                            //demographics,
                             dotTaskInstructions1,
                             dotTaskPractice1,
                             dotTaskInstructions2,
@@ -1023,32 +1041,29 @@
                             dotTaskStart,
                             loadingPartner,
                             partner1,
-                            dotTask2,
+                            dotTask2, //1
                             dotTaskRest,
-                            dotTaskStartInfoSeeking,
-                            dotTask2,
+                            dotTask2, //2
                             dotTaskRest,
-                            dotTask2,
+                            dotTask2, //3
                             dotTaskRest,
-                            dotTask2,
-                            dotTaskRest,
-                            dotTask2,
-                            dotTaskRest,
-                            feedbackOverconfPartner,
+                            dotTask2, //4
+                            // instructions for betting scale
+                            // 20 alone trials with betting scale
+                            feedbackOverconfPartner, // do we want to keep this?
                             dotTaskInstructions3,
                             loadingPartner,
                             partner2,
-                            dotTask1,
+                            dotTask1, //1
                             dotTaskRest,
-                            dotTask1,
+                            dotTask1, //2
                             dotTaskRest,
-                            dotTask1,
+                            dotTask1, //3
                             dotTaskRest,
-                            dotTask1,
-                            dotTaskRest,
-                            dotTask1,
-                            dotTaskRest,
-                            feedbackUnderconfPartner,
+                            dotTask1, //4
+                            // instructions for betting scale
+                            // 20 alone trials with betting scale
+                            feedbackUnderconfPartner, // do we want to keep this?
                             dotsScoreReveal,
                             feedbackPoll,
                             //debriefing,
@@ -1062,9 +1077,9 @@
                         // non-strategic squircles version overconfident, then underconfident
                         var timeline = [
                             //loading,
-                            PIS,
-                            consent,
-                            demographics,
+                            //PIS,
+                            //consent,
+                            //demographics,
                             squirclesTaskInstructions1,
                             dotTaskPractice1,
                             squirclesTaskInstructions2NS,
@@ -1072,32 +1087,29 @@
                             squirclesTaskStartNS,
                             loadingPartner,
                             partner1NS,
-                            dotTask2,
+                            dotTask2, //1
                             dotTaskRest,
-                            squirclesTaskStartInfoSeekingNS,
-                            dotTask2,
+                            dotTask2, //2
                             dotTaskRest,
-                            dotTask2,
+                            dotTask2, //3
                             dotTaskRest,
-                            dotTask2,
-                            dotTaskRest,
-                            dotTask2,
-                            dotTaskRest,
-                            feedbackOverconfPartner,
+                            dotTask2, //4
+                            // instructions for betting scale
+                            // 20 alone trials with betting scale
+                            feedbackOverconfPartner, // do we want to keep this?
                             squirclesTaskInstructions3NS,
                             loadingPartner,
                             partner2NS,
-                            dotTask1,
+                            dotTask1, //1
                             dotTaskRest,
-                            dotTask1,
+                            dotTask1, //2
                             dotTaskRest,
-                            dotTask1,
+                            dotTask1, //3
                             dotTaskRest,
-                            dotTask1,
-                            dotTaskRest,
-                            dotTask1,
-                            dotTaskRest,
-                            feedbackUnderconfPartner,
+                            dotTask1, //4
+                            // instructions for betting scale
+                            // 20 alone trials with betting scale
+                            feedbackUnderconfPartner, // do we want to keep this?
                             dotsScoreRevealNS,
                             feedbackPoll,
                             //debriefing,
@@ -1107,9 +1119,9 @@
                         // strategic squircles version overconfident, then underconfident
                         var timeline = [
                             //loading,
-                            PIS,
-                            consent,
-                            demographics,
+                            //PIS,
+                            //consent,
+                            //demographics,
                             squirclesTaskInstructions1,
                             dotTaskPractice1,
                             squirclesTaskInstructions2,
@@ -1117,32 +1129,29 @@
                             squirclesTaskStart,
                             loadingPartner,
                             partner1,
-                            dotTask2,
+                            dotTask2, //1
                             dotTaskRest,
-                            squirclesTaskStartInfoSeeking,
-                            dotTask2,
+                            dotTask2, //2
                             dotTaskRest,
-                            dotTask2,
+                            dotTask2, //3
                             dotTaskRest,
-                            dotTask2,
-                            dotTaskRest,
-                            dotTask2,
-                            dotTaskRest,
-                            feedbackOverconfPartner,
+                            dotTask2, //4
+                            // instructions for betting scale
+                            // 20 alone trials with betting scale
+                            feedbackOverconfPartner, // do we want to keep this?
                             squirclesTaskInstructions3,
                             loadingPartner,
                             partner2,
-                            dotTask1,
+                            dotTask1, //1
                             dotTaskRest,
-                            dotTask1,
+                            dotTask1, //2
                             dotTaskRest,
-                            dotTask1,
+                            dotTask1, //3
                             dotTaskRest,
-                            dotTask1,
-                            dotTaskRest,
-                            dotTask1,
-                            dotTaskRest,
-                            feedbackUnderconfPartner,
+                            dotTask1, //4
+                            // instructions for betting scale
+                            // 20 alone trials with betting scale
+                            feedbackUnderconfPartner, // do we want to keep this?
                             dotsScoreReveal,
                             feedbackPoll,
                             //debriefing,
@@ -1157,17 +1166,11 @@
             var timeline = [
                 dotTaskInstructions1,
                 dotTaskPractice1,
-                dotTaskInstructions2,
-                dotTaskPractice2,
-                dotTaskStart,
-                loadingPartner,
-                partner1,
-                dotTask2,
+                dotTaskInstructions1,
+                dotTask1,
                 dotTaskRest,
-                dotTask2,
-                dotTaskRest,
-                dotsScoreReveal,
-                feedbackPoll
+                dotTaskAlone,
+                //scale
             ];
             break;
 
