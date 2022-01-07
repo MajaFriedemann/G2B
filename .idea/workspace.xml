@@ -2,11 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="01027c40-0a66-4180-8a2c-8ee281125435" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/scripts/jpsych/jspsych-scale.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/scripts/dots-try.js" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/dots-try.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/jpsych/jspsych-loading-partner.js" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/jpsych/jspsych-loading-partner.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scripts/jpsych/jspsych-scale.js" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/jpsych/jspsych-scale.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/styles/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/styles/style.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -206,6 +207,7 @@
       <workItem from="1633365105402" duration="652000" />
       <workItem from="1633945479233" duration="601000" />
       <workItem from="1640707020855" duration="22537000" />
+      <workItem from="1641476008394" duration="27615000" />
     </task>
     <servers />
   </component>

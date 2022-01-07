@@ -268,7 +268,7 @@ function drawDots(parent, canvasID, canvasWidth, canvasHeight, dotCount, dotsSta
     }
 
 
-    if (partner === "none" || infoSeekingTrial === true) {
+    if (partner === "none" || infoSeekingTrial === true || partner === "alone") {
         partnerConfidences = undefined;
         partnerCorrectResponse = undefined;
     } else {
@@ -393,10 +393,56 @@ function drawDots(parent, canvasID, canvasWidth, canvasHeight, dotCount, dotsSta
                 } else {
                     correctResponse = false;
                 }
-                //automatically trigger click on continue button
-                setTimeout(function () {
-                    buttonBackend('submit');
-                }, 600)
+                if (partner === "alone") {
+                    $('.mask-left').css('border', '5px solid rgba(0,0,0,0)');
+                    $('.mask-right').css('border', '5px solid rgba(0,0,0,0)');
+                    document.getElementById("confidence-question").innerHTML = "<h1>Select the amount you want to bet on your decision.</h1>";
+                    $('.confidence-question').css('z-index', '100');
+                    $('.confidence-question').css('visibility', 'visible');
+
+
+                    function bettingMatrix() {
+                        var c, r, t;
+                        t = document.createElement('table');
+                        t.id = "betting-table";
+                        r = t.insertRow(0);
+                        c = r.insertCell(0);
+                        c.innerHTML = "<button class='betting' id='b1'>Correct: 0p \Incorrect: 0p</button>";
+                        c = r.insertCell(1);
+                        c.innerHTML = "<button class='betting' id='b2'>Correct: 1p \Incorrect: -1p</button>";
+                        r = t.insertRow(1);
+                        c = r.insertCell(0);
+                        c.innerHTML = "<button class='betting' id='b3'>Correct: 2p \Incorrect: -3p</button>";
+                        c = r.insertCell(1);
+                        c.innerHTML = "<button class='betting' id='b4'>Correct: 4p \Incorrect: -6p</button>";
+                        r = t.insertRow(2);
+                        c = r.insertCell(0);
+                        c.innerHTML = "<button class='betting' id='b5'>Correct: 6p \Incorrect: -10p</button>";
+                        c = r.insertCell(1);
+                        c.innerHTML = "<button class='betting' id='b6'>Correct: 8p \Incorrect: -15p</button>";
+                        document.body.appendChild(t);
+
+                        $('.betting').on('click', function () {
+                            setTimeout(function () {
+                                document.getElementById('betting-table').remove();
+                                $('.confidence-question').css('visibility', 'hidden');
+                                buttonBackend('submit');
+                                $('.jspsych-content-wrapper').css('height', 'revert');
+                                $('.jspsych-sliders-response-wrapper').css('height', 'revert');
+                            }, 600)
+                        });
+
+                        $('.jspsych-content-wrapper').css('height', '10vh');
+                        $('.jspsych-sliders-response-wrapper').css('height', '5vh');
+                    }
+                    bettingMatrix();
+
+                } else {
+                    //automatically trigger click on continue button
+                    setTimeout(function () {
+                        buttonBackend('submit');
+                    }, 600)
+                }
             }
         }, 700);
     });

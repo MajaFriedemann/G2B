@@ -1205,6 +1205,41 @@ button.default-white-button.start-tutorial, .button.default-white-button.start-t
   text-align: center;
 }
 
+
+/* -------------------------------------------------------------
+-------------------------- BETTING ---------------------------
+---------------------------------------------------------------- */
+
+.betting-table {
+  margin: 0 auto;
+  padding: 6px;
+}
+
+#betting-table tr, td {
+  padding: 6px;
+}
+
+#betting-table button {
+  height: 120px;
+  width: 200px;
+  border: none;
+  font-family: helvetica;
+  font-weight: bold;
+  font-size: large;
+  line-height: 1.5em;
+}
+
+#b1, #b2, #b3, #b4, #b5, #b6 {
+  color: white;
+  background-color: rgba(13, 219, 255, 0.5);
+
+}
+
+#b1:hover, #b2:hover, #b3:hover, #b4:hover, #b5:hover, #b6:hover {
+  background-color: rgba(13, 219, 255, 1);
+}
+
+
 /* -------------------------------------------------------------
 -------------------------- GAMEBOARD ---------------------------
 ---------------------------------------------------------------- */
@@ -2086,3 +2121,7 @@ svg circle {
     margin-top: -17vh !important;
   }
 }
+
+
+
+
