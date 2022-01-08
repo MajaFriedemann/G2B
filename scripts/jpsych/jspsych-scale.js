@@ -115,7 +115,7 @@ jsPsych.plugins['jspsych-scale'] = (function () {
                 'div',
                 'question',
                 'feedback-title',
-                '<h2>Please indicate to what extent the following statements apply to you.<br><br>I see myself as someone who...</h2>'
+                '<h2>Lastly, please indicate to what extent the following statements apply to you. If you cannot continue, please make sure that you have responded to all items.<br><br>I see myself as someone who...</h2>'
             );
 
             var feedbackPoll = createGeneral(
@@ -166,7 +166,7 @@ jsPsych.plugins['jspsych-scale'] = (function () {
                 'div',
                 'question',
                 'feedback-title',
-                '<h2>Please indicate to what extent the following statements apply to you.</h2>'
+                '<h2>Lastly, please indicate to what extent the following statements apply to you. If you cannot continue, please make sure that you have responded to all items.</h2>'
             );
 
             var feedbackPoll = createGeneral(

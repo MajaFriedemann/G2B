@@ -37,12 +37,29 @@ jsPsych.plugins['jspsych-loading-partner'] = (function () {
 
     plugin.trial = function (display_element, trial) {
 
+        // randomize partner bias
+        if (partnerBias === "none") {
+            var x = Math.random();  //used to decide if under- or overconfident partner is first
+            if (x > 0.5) {
+                partnerBias = "right";
+            } else {
+                partnerBias = "left";
+            }
+        } else {
+            if (partnerBias === "left") {
+                partnerBias = "right";
+            } else {
+                partnerBias = "left";
+            }
+        }
+
+
         // clear display element and apply page default styles
         display_element.innerHTML = '';
         $('body')
             .css('height', 'auto')
             .css('background-color', 'black')
-            .css('overflow', 'hidden');
+            .css('overflow', 'hidden')
         $.scrollify.destroy();
 
         setCookie('UIDMUL-IST-progress', '0', 365);
@@ -202,22 +219,6 @@ jsPsych.plugins['jspsych-loading-partner'] = (function () {
             override(e);
         });
     };
-
-    // if this is the first partner, randomize partner bias
-    if (partnerBias == "none") {
-        const y = Math.random();
-        if (y < 0.5) {
-            partnerBias = "right";
-        } else {
-            partnerBias = "left";
-        }
-    // if this is the second partner, then make the bias the opposite side of what it was before
-    } else if (partnerBias == "right") {
-        partnerBias = "left"
-    } else {
-        partnerBias = "right"
-    }
-
 
     return plugin;
 })();

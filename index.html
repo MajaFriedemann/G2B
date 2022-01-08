@@ -73,13 +73,13 @@
     //CHANGE ALL THE THREE VARIABLES FOR SESSION NO2
 
     // set this to true for the squircles task version and to false for the dot task version
-    const squirclesVersion = false;
+    const squirclesVersion = true;
 
     //set this to true for the strategic version with feedback and to false for the non-strategic version
-    const strategicVersion = true;
+    const strategicVersion = false;
 
     //set this to 1 or 2 depending on whether it is the first or second session of the participant (just for saving this variable)
-    const session = 1;
+    const session = 2;
 
 
     /* PROLIFIC PARAMETERS */
@@ -97,7 +97,7 @@
     var studyName = 'Confidence in group decision-making';
     var release_date = '2021/03/09';
     var testing_timeline = false;
-    var trialTypeOrder = 'testing';          /* "testing" or "all"  |  for "testing" the right click context menu is enabled and the data will be downloaded as a csv file*/
+    var trialTypeOrder = 'all';          /* "testing" or "all"  |  for "testing" the right click context menu is enabled and the data will be downloaded as a csv file*/
     var scoreRule = 'cumulative reward';
     if (strategicVersion === false) {
         scoreRule = 'brier';
