@@ -42,7 +42,7 @@ jsPsych.plugins['jspsych-loading-partner'] = (function () {
         $('body')
             .css('height', 'auto')
             .css('background-color', 'black')
-            .css('overflow', 'hidden')
+            .css('overflow', 'hidden');
         $.scrollify.destroy();
 
         setCookie('UIDMUL-IST-progress', '0', 365);
