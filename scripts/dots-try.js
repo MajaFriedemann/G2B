@@ -36,6 +36,7 @@ function drawDots(parent, canvasID, canvasWidth, canvasHeight, dotCount, dotsSta
     var stimulusPairs;
     var stimulusPairsSecond;
     var dotConfidences;
+    var participantBet;
     var initialChoice;
     var partnerConfidences;
     var start_timer;
@@ -236,15 +237,19 @@ function drawDots(parent, canvasID, canvasWidth, canvasHeight, dotCount, dotsSta
     var partnerConfidenceCorrect;
     var error;
     error = randn_bm(-0.05*3, 0.05*3, 1);
-    if (partner == "underconfident") {
+    if (partner === "underconfident") {
         partnerConfidence = 0.1 + (pCorrect - 0.5) * 0.8 + error;
         partnerConfidence = partnerConfidence*50;                     //change scale from 0-1 to 0-50
-    } else if (partner == "overconfident") {
+    } else if (partner === "overconfident") {
         partnerConfidence = 0.6 + (pCorrect - 0.5) * 0.8 + error;
         partnerConfidence = partnerConfidence*50;
     } else {
         partnerConfidence = 0   //if partner = none
     }
+
+    // add a constant to partner confidence for when the non-biased side is picked
+    if (correctSide !== partnerBias) { partnerConfidence = partnerConfidence + 5}
+    if (partnerConfidence > 100) { partnerConfidence = 100}
 
 
     // partner confidence marker on the slider
@@ -423,6 +428,7 @@ function drawDots(parent, canvasID, canvasWidth, canvasHeight, dotCount, dotsSta
                         document.body.appendChild(t);
 
                         $('.betting').on('click', function () {
+                            participantBet = this.getAttribute('id');
                             setTimeout(function () {
                                 document.getElementById('betting-table').remove();
                                 $('.confidence-question').css('visibility', 'hidden');
@@ -436,6 +442,7 @@ function drawDots(parent, canvasID, canvasWidth, canvasHeight, dotCount, dotsSta
                         $('.jspsych-sliders-response-wrapper').css('height', '5vh');
                     }
                     bettingMatrix();
+                    start_timer = Date.now(); // confidence timer on the betting times will be betting timer
 
                 } else {
                     //automatically trigger click on continue button
@@ -683,6 +690,7 @@ function drawDots(parent, canvasID, canvasWidth, canvasHeight, dotCount, dotsSta
                 trialDataVariable['participantCorrect'].push(participantCorrectResponse);
                 trialDataVariable['stimulus_pairs'].push(JSON.stringify(stimulusPairs));
                 trialDataVariable['participant_confidence'].push(dotConfidences);
+                trialDataVariable['participant_bet'].push(participantBet);
                 trialDataVariable['initial_choices'].push(initialChoice);
                 trialDataVariable['partner_confidences'].push(partnerConfidences);
                 trialDataVariable['stimulus_RTs'].push(dotRTs);
@@ -691,6 +699,7 @@ function drawDots(parent, canvasID, canvasWidth, canvasHeight, dotCount, dotsSta
                 trialDataVariable['info_choice_RTs'].push(infoChoiceRTs);
                 trialDataVariable['isTutorialMode'].push(isTutorialMode);
                 trialDataVariable['partner'].push(partner);
+                trialDataVariable['partner_bias'].push(partnerBias);
                 trialCounterVariable++;
                 totalTrials++;
                 trialDataVariable['trial_count'].push(totalTrials);
@@ -788,11 +797,13 @@ function drawDots(parent, canvasID, canvasWidth, canvasHeight, dotCount, dotsSta
                                     //permanentDataVariable["block_accuracy"].push(accuracy);
                                     permanentDataVariable["isTutorialMode"].push(trialDataVariable["isTutorialMode"]);
                                     permanentDataVariable["partner"].push(trialDataVariable["partner"]);
+                                    permanentDataVariable["partner_bias"].push(trialDataVariable["partner_bias"]);
                                     permanentDataVariable["dots_staircase"].push(trialDataVariable["dots_staircase"]);
                                     permanentDataVariable["trial_count"].push(trialDataVariable["trial_count"]);
                                     permanentDataVariable["stimulus_pairs"].push(trialDataVariable["stimulus_pairs"]);
                                     permanentDataVariable["correctSide"].push(trialDataVariable["correctSide"]);
                                     permanentDataVariable["participant_confidence"].push(trialDataVariable["participant_confidence"]);
+                                    permanentDataVariable["participant_bet"].push(trialDataVariable["participant_bet"]);
                                     permanentDataVariable["initial_choices"].push(trialDataVariable["initial_choices"]);
                                     permanentDataVariable["partner_confidences"].push(trialDataVariable["partner_confidences"]);
                                     permanentDataVariable["isCorrect"].push(trialDataVariable["isCorrect"]);
@@ -836,10 +847,12 @@ function drawDots(parent, canvasID, canvasWidth, canvasHeight, dotCount, dotsSta
                                     trial_count: [],
                                     isTutorialMode: [],
                                     partner: [],
+                                    partner_bias: [],
                                     dots_staircase: [],
                                     correctSide: [],
                                     initial_choices: [],
                                     participant_confidence: [],
+                                    participant_bet: [],
                                     partner_confidences: [],
                                     participant_chosen: [],
                                     stimulus_pairs: [],
@@ -874,9 +887,11 @@ function drawDots(parent, canvasID, canvasWidth, canvasHeight, dotCount, dotsSta
                             permanentDataVariable["dots_staircase"].push(trialDataVariable["dots_staircase"]);
                             permanentDataVariable["isTutorialMode"].push(trialDataVariable["isTutorialMode"]);
                             permanentDataVariable["partner"].push(trialDataVariable["partner"]);
+                            permanentDataVariable["partner_bias"].push(trialDataVariable["partner_bias"]);
                             permanentDataVariable["stimulus_pairs"].push(trialDataVariable["stimulus_pairs"]);
                             permanentDataVariable["correctSide"].push(trialDataVariable["correctSide"]);
                             permanentDataVariable["participant_confidence"].push(trialDataVariable["participant_confidence"]);
+                            permanentDataVariable["participant_bet"].push(trialDataVariable["participant_bet"]);
                             permanentDataVariable["initial_choices"].push(trialDataVariable["initial_choices"]);
                             permanentDataVariable["partner_confidences"].push(trialDataVariable["partner_confidences"]);
                             permanentDataVariable["isCorrect"].push(trialDataVariable["isCorrect"]);

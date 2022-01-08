@@ -104,7 +104,7 @@ jsPsych.plugins['jspsych-message-splash'] = (function () {
       ''
     );
 
-    if (trial.variableMessage == 'dotRest Brier') {
+    if (trial.variableMessage === 'dotRest Brier') {
       var fullscreenMessage = createGeneral(
         fullscreenMessage,
         splashPage,
@@ -113,15 +113,15 @@ jsPsych.plugins['jspsych-message-splash'] = (function () {
         trial.name + '-' + 'message',
         '<h1>' + dotRestMessageBrier + '</h1>'
       );
-    } else if (trial.variableMessage == 'dotRest flat') {
-      var fullscreenMessage = createGeneral(
-        fullscreenMessage,
-        splashPage,
-        'div',
-        'main-message',
-        trial.name + '-' + 'message',
-        '<h1>' + dotRestMessageFlat + '</h1>'
-      );
+    // } else if (trial.variableMessage == 'dotRest flat') {
+    //   var fullscreenMessage = createGeneral(
+    //     fullscreenMessage,
+    //     splashPage,
+    //     'div',
+    //     'main-message',
+    //     trial.name + '-' + 'message',
+    //     '<h1>' + dotRestMessageFlat + '</h1>'
+    //   );
     } else {
       var fullscreenMessage = createGeneral(
         fullscreenMessage,

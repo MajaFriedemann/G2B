@@ -1011,6 +1011,13 @@ button.default-white-button.start-tutorial, .button.default-white-button.start-t
   background-repeat: no-repeat;
 }
 
+.gameboard-gif#bettingScale {
+  background: url("../assets/bettingScale.png");
+  background-size: 35vmax 35vmax;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
 
 .gameboard-gif#dotTask-partner {
   background: url("../assets/partner.png");
