@@ -1012,7 +1012,7 @@ button.default-white-button.start-tutorial, .button.default-white-button.start-t
 }
 
 .gameboard-gif#bettingScale {
-  background: url("../assets/bettingScale.png");
+  background: url("../assets/bettingScale.PNG");
   background-size: 35vmax 35vmax;
   background-position: center;
   background-repeat: no-repeat;
