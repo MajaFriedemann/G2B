@@ -427,8 +427,12 @@ function drawDots(parent, canvasID, canvasWidth, canvasHeight, dotCount, dotsSta
                             c.innerHTML = "<button class='betting' id='b6'>Correct: 8p \Incorrect: -15p</button>";
                             document.body.appendChild(t);
 
+                            start_timer = Date.now(); // confidence timer on the betting times will be betting timer
+
                             $('.betting').on('click', function () {
                                 participantBet = this.getAttribute('id');
+                                end_timer = Date.now();
+                                confidenceRTs = calculateRT(start_timer, end_timer);
                                 setTimeout(function () {
                                     document.getElementById('betting-table').remove();
                                     $('.confidence-question').css('visibility', 'hidden');
@@ -442,7 +446,6 @@ function drawDots(parent, canvasID, canvasWidth, canvasHeight, dotCount, dotsSta
                             $('.jspsych-sliders-response-wrapper').css('height', '5vh');
                         }
                         bettingMatrix();
-                        start_timer = Date.now(); // confidence timer on the betting times will be betting timer
                     }, 600);
 
                 } else {
